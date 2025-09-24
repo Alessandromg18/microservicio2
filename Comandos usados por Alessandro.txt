@@ -1,0 +1,81 @@
+Comandos usados por Alessandro para la configuración:
+
+En MV Database:
+
+1. Crear docker-compose.yml
+
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_c
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: utec
+      MYSQL_DATABASE: qa_db
+    ports:
+      - "3307:3306"   
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    container_name: adminer_c
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+
+volumes:
+  mysql_data:
+
+2. Levantar servicios
+
+   docker-compose up -d
+   docker ps
+
+3. Conectarte a MySQL desde la VM Desarrollo (prueba de conexión) 
+   mysql -h 172.31.27.82 -P 3307 -u root -p 
+
+
+EN MV Desarrollo 
+
+1. Iniciar sesión en Docker Hub (si la imagen es privada)
+   docker login
+
+2. Descargar la imagen desde Docker Hub
+   docker pull alessandro837/qa-api:1.0.2
+
+3. Crear el archivo docker-compose.api.yml
+   version: "3.8"
+
+services:
+  api:
+    image: alessandro837/qa-api:1.0.2   
+    container_name: qa_api_c
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DB_HOST: "172.31.27.82"       
+      DB_PORT: 3307
+      DB_USER: root
+      DB_PASSWORD: utec
+      DB_NAME: qa_db
+      BASE_URL: "http://98.89.173.107:8005"  
+    ports:
+      - "8005:8005"
+
+4. Levantar la API con Docker Compose 
+   docker-compose up -d
+
+5. Verificar los logs de la API (Opcional)
+   docker logs -f qa_api_c
+
+  DEBERIA MOSTRAR:
+✅ Conexión a MySQL establecida correctamente
+🚀 API corriendo en http://98.89.173.107:8005
+📄 Swagger UI disponible en http://98.89.173.107:8005/api-docs
+
+6. Detener el contenedor
+   docker-compose down
+

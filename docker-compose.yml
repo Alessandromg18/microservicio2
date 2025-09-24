@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  api:
+    build: .
+    container_name: qa_api_c
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      # DB_HOST = IP de la MV BD (privada si hay red privada, sino pública)
+      DB_HOST: "172.31.27.82"
+      DB_PORT: 3307
+      DB_USER: root
+      DB_PASSWORD: utec
+      DB_NAME: qa_db
+      # Swagger / BASE_URL usa la IP pública fija de esta MV
+      BASE_URL: "http://98.89.173.107:8005"
+    ports:
+      - "8005:8005"
