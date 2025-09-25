@@ -51,7 +51,7 @@ EN MV Desarrollo
 
 services:
   api:
-    image: alessandro837/qa-api:1.0.2   
+    image: alessandro837/qa-api:1.0.3   
     container_name: qa_api_c
     restart: unless-stopped
     environment:
@@ -78,5 +78,6 @@ services:
 
 6. Detener el contenedor
    docker-compose down
+
 
 
