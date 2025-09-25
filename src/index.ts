@@ -2,7 +2,7 @@ import "reflect-metadata";
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import { initDatabase } from "./config/database";
-import path from "path"; // 👈 IMPORTANTE
+import path from "path";
 
 // Rutas
 import questionsRoutes from "./routes/questionsRoutes";
@@ -22,9 +22,9 @@ app.use(express.json());
 
 // Configuración Swagger
 const port = Number(process.env.PORT ?? 8005);
-// 👇 Usa la IP pública de la MV Desarrollo
 const BASE_URL = process.env.BASE_URL || `http://98.89.173.107:${port}`;
 
+// ✅ Configuración corregida de swaggerSpec
 const swaggerSpec = swaggerJsdoc({
   definition: {
     openapi: "3.0.0",
@@ -51,12 +51,10 @@ const swaggerSpec = swaggerJsdoc({
       },
     },
   },
-  // 👇 Cambié rutas relativas por absolutas
+  // ✅ Busca tanto en dist/*.js como en src/*.ts
   apis: [
-    path.join(
-      __dirname,
-      process.env.NODE_ENV === "production" ? "./routes/*.js" : "./routes/*.ts"
-    ),
+    path.resolve(__dirname, "./routes/*.{ts,js}"),
+    path.resolve(__dirname, "./controller/*.{ts,js}"), // opcional si luego documentas controllers
   ],
 });
 
@@ -86,6 +84,13 @@ initDatabase()
     app.listen(port, () => {
       console.log(`🚀 API corriendo en ${BASE_URL}`);
       console.log(`📄 Swagger UI disponible en ${BASE_URL}/api-docs`);
+
+      // 👇 Debug: imprime las rutas detectadas por swagger-jsdoc
+      console.log("📂 Swagger está leyendo anotaciones desde:");
+      console.log(
+        path.resolve(__dirname, "./routes/*.{ts,js}"),
+        path.resolve(__dirname, "./controller/*.{ts,js}")
+      );
     });
   })
   .catch((err) => {
