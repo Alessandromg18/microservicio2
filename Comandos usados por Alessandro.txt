@@ -44,7 +44,7 @@ EN MV Desarrollo
    docker login
 
 2. Descargar la imagen desde Docker Hub
-   docker pull alessandro837/qa-api:1.0.2
+   docker pull alessandro837/qa-api:1.0.3
 
 3. Crear el archivo docker-compose.api.yml
    version: "3.8"
@@ -78,4 +78,5 @@ services:
 
 6. Detener el contenedor
    docker-compose down
+
 
