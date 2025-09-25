@@ -2,6 +2,7 @@ import "reflect-metadata";
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import { initDatabase } from "./config/database";
+import path from "path"; // 👈 IMPORTANTE
 
 // Rutas
 import questionsRoutes from "./routes/questionsRoutes";
@@ -20,11 +21,9 @@ app.use(cors({ origin: "*" }));
 app.use(express.json());
 
 // Configuración Swagger
-
 const port = Number(process.env.PORT ?? 8005);
 // 👇 Usa la IP pública de la MV Desarrollo
 const BASE_URL = process.env.BASE_URL || `http://98.89.173.107:${port}`;
-
 
 const swaggerSpec = swaggerJsdoc({
   definition: {
@@ -52,7 +51,13 @@ const swaggerSpec = swaggerJsdoc({
       },
     },
   },
-  apis: [process.env.NODE_ENV === "production" ? "./dist/routes/*.js" : "./src/routes/*.ts"],
+  // 👇 Cambié rutas relativas por absolutas
+  apis: [
+    path.join(
+      __dirname,
+      process.env.NODE_ENV === "production" ? "./routes/*.js" : "./routes/*.ts"
+    ),
+  ],
 });
 
 // Ruta Swagger UI
